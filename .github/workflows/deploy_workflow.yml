@@ -4,31 +4,15 @@ on:
     branches:
       - master
 jobs:
-  deploy:
-        runs-on: ubuntu-latest
-        name: 🚀 Deploy 
-        timeout-minutes: 30 
-        steps:
-            - name: Pull from GitHub
-              uses: appleboy/ssh-action@master
-              env:
-                HOST: ${{ secrets.REMOTE_HOST }}
-                USERNAME: ${{ secrets.REMOTE_USER }}
-                PORT: ${{ secrets.PORT }}
-                KEY: ${{ secrets.SSH_PRIVATE_KEY }}
-              with: 
-                  source: "./jenkins/*"
-                  target: "/home/devops/"
-                  strip_components: 1
-            - name: Docker Build
-              uses: appleboy/ssh-action@master
-              env:
-                HOST: ${{ secrets.REMOTE_HOST }}
-                USERNAME: ${{ secrets.REMOTE_USER }}
-                PORT: ${{ secrets.PORT }}
-                KEY: ${{ secrets.SSH_PRIVATE_KEY }}
-              with: 
-                  script: |
-                    cd /home/devops/jenkins
-                    docker compose -f docker-compose.yml up -d
-                  command_timeout: 25m
+  build:
+    runs-on: ubuntu-latest
+    steps:
+    - name: Clonar repositorio
+      uses: appleboy/ssh-action@master
+      with:
+        host: ${{ secrets.REMOTE_HOST }}
+        username: root
+        key: ${{ secrets.SSH_PRIVATE_KEY }}
+        port: ${{ secrets.PORT }}
+        script: |
+          git clone https://github.com/Ohernandezm/Devops-docker.git
