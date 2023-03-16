@@ -17,7 +17,7 @@ jobs:
                 key: ${{ secrets.SSH_PRIVATE_KEY }}
                 port: ${{ secrets.PORT }}
                 script: |
-                git clone https://github.com/Ohernandezm/Devops-docker.git
+                    git clone https://github.com/Ohernandezm/Devops-docker.git
           - name: Docker Build
             uses: appleboy/ssh-action@master
             with:
@@ -26,5 +26,5 @@ jobs:
                 key: ${{ secrets.SSH_PRIVATE_KEY }}
                 port: ${{ secrets.PORT }}
                 script: |
-                cd /home/Devops-docker
-                docker compose -f docker-compose.yml up -d
+                    cd /home/Devops-docker
+                    docker compose -f docker-compose.yml up -d
