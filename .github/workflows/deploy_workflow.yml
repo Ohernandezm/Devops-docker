@@ -11,19 +11,23 @@ jobs:
         steps:
             - name: Pull from GitHub
               uses: appleboy/ssh-action@master
-              with:
-                  host: ${{ secrets.REMOTE_HOST }}
-                  username: ${{ secrets.REMOTE_HOST }}
-                  key: ${{ secrets.SSH_PRIVATE_KEY }}
+              env:
+                HOST: ${{ secrets.REMOTE_HOST }}
+                USERNAME: ${{ secrets.REMOTE_HOST }}
+                PORT: ${{ secrets.PORT }}
+                KEY: ${{ secrets.SSH_PRIVATE_KEY }}
+              with: 
                   source: "jenkins/*"
                   target: "/home/devops"
                   strip_components: 1
             - name: Docker Build
               uses: appleboy/ssh-action@master
-              with:
-                  host: ${{ secrets.REMOTE_HOST }}
-                  username: ${{ secrets.REMOTE_HOST }}
-                  key: ${{ secrets.SSH_PRIVATE_KEY }}
+              env:
+                HOST: ${{ secrets.REMOTE_HOST }}
+                USERNAME: ${{ secrets.REMOTE_HOST }}
+                PORT: ${{ secrets.PORT }}
+                KEY: ${{ secrets.SSH_PRIVATE_KEY }}
+              with: 
                   script: |
                     cd /home/devops/jenkins
                     docker compose -f docker-compose.yml up -d
