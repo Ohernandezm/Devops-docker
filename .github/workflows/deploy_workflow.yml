@@ -23,7 +23,7 @@ jobs:
         uses: wlixcc/SFTP-Deploy-Action@v1.2.1
         with:
           # username: Nombre de usuario con el cual nos conectaremos al servidor.
-          username: ubuntu
+          username:  ${{ secrets.REMOTE_USER }} 
           # server: Nombre del servidor o IP.
           server:  ${{ secrets.REMOTE_HOST }}
           port: ${{ secrets.PORT }} 
