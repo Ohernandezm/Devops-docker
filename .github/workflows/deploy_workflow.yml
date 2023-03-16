@@ -5,10 +5,9 @@ on:
       - master
 jobs:
   deploy:
-    name: 🚀 Deploy 
-    runs-on: ubuntu-latest
-        timeout-minutes: 30
-        name: Deploy Obrador Master
+        runs-on: ubuntu-latest
+        name: 🚀 Deploy 
+        timeout-minutes: 30 
         steps:
             - name: Pull from GitHub
               uses: appleboy/ssh-action@master
