@@ -1,0 +1,32 @@
+name: Testing Deploy
+on:
+    workflow_dispatch:
+    push:
+        branches:
+            - testing
+jobs:
+    deploy-staging:
+        runs-on: ubuntu-latest
+        timeout-minutes: 30
+        name: Deploy Obrador Testing
+        steps:
+            - name: Pull from GitHub
+              uses: appleboy/ssh-action@master
+              with:
+                  host: ${{ secrets.SSH_HOST_TEST }}
+                  username: ${{ secrets.SSH_USERNAME }}
+                  key: ${{ secrets.SSH_KEY }}
+                  script: cd /home/trepcom && rm -R JGO-Obrador && ${{ secrets.CLONE_CMD_SCRIPT_TEST }}
+            - name: Docker Build
+              uses: appleboy/ssh-action@master
+              with:
+                  host: ${{ secrets.SSH_HOST_TEST }}
+                  username: ${{ secrets.SSH_USERNAME }}
+                  key: ${{ secrets.SSH_KEY }}
+                  script: |
+                      cd /home/trepcom/JGO-Obrador
+                      docker image prune -f
+                      docker compose -f docker-compose.testing.yml down && docker volume rm jgo-obrador_web-root
+                      docker compose -f docker-compose.testing.yml build --build-arg NPM_TOKEN=${{ secrets.NPM_TOKEN }}
+                      docker compose -f docker-compose.testing.yml up -d
+                  command_timeout: 25m
