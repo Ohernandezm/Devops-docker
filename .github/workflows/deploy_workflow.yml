@@ -18,5 +18,4 @@ jobs:
                   key: ${{ secrets.SSH_PRIVATE_KEY }}
                   script: 
                         cd /home/ 
-                        git clone https://github.com/Ohernandezm/Devops-docker.git devops 
-                        cd devops
+                        git clone https://github.com/Ohernandezm/Devops-docker.git
