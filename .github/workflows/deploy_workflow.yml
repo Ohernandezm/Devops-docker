@@ -1,32 +1,33 @@
-name: Testing Deploy
+name: Deploy Templates
 on:
-    workflow_dispatch:
-    push:
-        branches:
-            - testing
+  push:
+    branches:
+      - master
 jobs:
-    deploy-staging:
-        runs-on: ubuntu-latest
-        timeout-minutes: 30
-        name: Deploy Obrador Testing
-        steps:
-            - name: Pull from GitHub
-              uses: appleboy/ssh-action@master
-              with:
-                  host: ${{ secrets.SSH_HOST_TEST }}
-                  username: ${{ secrets.SSH_USERNAME }}
-                  key: ${{ secrets.SSH_KEY }}
-                  script: cd /home/trepcom && rm -R JGO-Obrador && ${{ secrets.CLONE_CMD_SCRIPT_TEST }}
-            - name: Docker Build
-              uses: appleboy/ssh-action@master
-              with:
-                  host: ${{ secrets.SSH_HOST_TEST }}
-                  username: ${{ secrets.SSH_USERNAME }}
-                  key: ${{ secrets.SSH_KEY }}
-                  script: |
-                      cd /home/trepcom/JGO-Obrador
-                      docker image prune -f
-                      docker compose -f docker-compose.testing.yml down && docker volume rm jgo-obrador_web-root
-                      docker compose -f docker-compose.testing.yml build --build-arg NPM_TOKEN=${{ secrets.NPM_TOKEN }}
-                      docker compose -f docker-compose.testing.yml up -d
-                  command_timeout: 25m
+  deploy:
+    name: 🚀 Deploy Comments Templates
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: 🚚 Get Latest Code
+      uses: actions/checkout@v3
+
+    - name: 📂 Sync Production Config
+      uses: easingthemes/ssh-deploy@v4.0.5
+      env:
+        SSH_PRIVATE_KEY: ${{ secrets.SSH_PRIVATE_KEY }}
+        REMOTE_HOST: ${{ secrets.REMOTE_HOST }}
+        REMOTE_USER: ${{ secrets.REMOTE_USER }}
+        SOURCE: config.production.json
+        TARGET: /var/path.../
+        ARGS: -rlgoDzvc -i -og --chown=user:user
+
+    - name: 📂 Sync Comments Email Templates
+      uses: easingthemes/ssh-deploy@v4.0.5
+      env:
+        SSH_PRIVATE_KEY: ${{ secrets.SSH_PRIVATE_KEY }}
+        REMOTE_HOST: ${{ secrets.REMOTE_HOST }}
+        REMOTE_USER: ${{ secrets.REMOTE_USER }}
+        SOURCE: email-templates/comments/
+        TARGET: /var/path.../
+        ARGS: -rlgoDzvc -i -og --chown=user:user
