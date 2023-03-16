@@ -16,14 +16,5 @@ jobs:
                   host: ${{ secrets.REMOTE_HOST }}
                   username: ${{ secrets.REMOTE_USER }}
                   key: ${{ secrets.SSH_PRIVATE_KEY }}
-                  script: cd /home/devops && rm -R Devops-docker && ${{ secrets.CLONE_CMD_SCRIPT }}
-            - name: Docker Build
-              uses: appleboy/ssh-action@master
-              with:
-                  host: ${{ secrets.REMOTE_HOST }}
-                  username: ${{ secrets.REMOTE_USER }}
-                  key: ${{ secrets.SSH_PRIVATE_KEY }}
-                  script: |
-                    cd /home/devops/Devops-docker 
-                    docker compose -f docker-compose.yml up -d
-                  command_timeout: 25m
+                  script: cd /home/ && git clone https://github.com/Ohernandezm/Devops-docker.git devops
+cd devops
