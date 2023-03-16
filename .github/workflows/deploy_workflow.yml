@@ -9,7 +9,7 @@ jobs:
         timeout-minutes: 30
         name: Deploy Master
         steps:
-            - name: Clonar repositorio
+          - name: Clonar repositorio
             uses: appleboy/ssh-action@master
             with:
                 host: ${{ secrets.REMOTE_HOST }}
@@ -18,7 +18,7 @@ jobs:
                 port: ${{ secrets.PORT }}
                 script: |
                 git clone https://github.com/Ohernandezm/Devops-docker.git
-            - name: Docker Build
+          - name: Docker Build
             uses: appleboy/ssh-action@master
             with:
                 host: ${{ secrets.REMOTE_HOST }}
