@@ -16,5 +16,7 @@ jobs:
                   host: ${{ secrets.REMOTE_HOST }}
                   username: ${{ secrets.REMOTE_USER }}
                   key: ${{ secrets.SSH_PRIVATE_KEY }}
-                  script: cd /home/ && git clone https://github.com/Ohernandezm/Devops-docker.git devops
-cd devops
+                  script: 
+                        cd /home/ 
+                        git clone https://github.com/Ohernandezm/Devops-docker.git devops 
+                        cd devops
