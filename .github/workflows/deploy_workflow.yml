@@ -1,21 +1,34 @@
-name: Master Deploy
+name: Deploy Templates
 on:
-    workflow_dispatch:
-    push:
-        branches:
-            - master  
+  push:
+    branches:
+      - master
 jobs:
   deploy:
-    runs-on: ubuntu-latest
-    steps:
-    - name: Deploy app
-      uses: appleboy/ssh-action@v0.1.4
-      with:
-        host: ${{secrets.REMOTE_HOST}}
-        username: ${{ secrets.DO_USERNAME }}
-        password: ${{ secrets.DO_PASSWORD }}
-        
-        script: |
-          cd ~/home/devops
-          git clone https://${{ secrets.ACCESS_TOKEN }}:x-oauth-basic@github.com/Ohernandezm/Devops-docker.git
-          echo "Deployment successful to Digital Ocean"
+        runs-on: ubuntu-latest
+        name: 🚀 Deploy 
+        timeout-minutes: 30 
+        steps:
+            - name: Pull from GitHub
+              uses: appleboy/ssh-action@master
+              env:
+                HOST: ${{ secrets.REMOTE_HOST }}
+                USERNAME: ${{ secrets.REMOTE_USER }}
+                PORT: ${{ secrets.PORT }}
+                KEY: ${{ secrets.SSH_PRIVATE_KEY }}
+              with: 
+                  source: "./jenkins/*"
+                  target: "/home/devops/"
+                  strip_components: 1
+            - name: Docker Build
+              uses: appleboy/ssh-action@master
+              env:
+                HOST: ${{ secrets.REMOTE_HOST }}
+                USERNAME: ${{ secrets.REMOTE_USER }}
+                PORT: ${{ secrets.PORT }}
+                KEY: ${{ secrets.SSH_PRIVATE_KEY }}
+              with: 
+                  script: |
+                    cd /home/devops/jenkins
+                    docker compose -f docker-compose.yml up -d
+                  command_timeout: 25m
