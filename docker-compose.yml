@@ -1,0 +1,26 @@
+version: "3"
+services:
+  jenkins: 
+    build: jenkins/.
+    image: jenkinsdevops
+    container_name: jenkinsdevops
+    ports:
+      - "8080:8080" 
+    volumes:
+      - "./jenkins/jenkins_home:/var/jenkins_home"
+      - "/var/run/docker.sock:/var/run/docker.sock" 
+    privileged: true
+    user: root
+    networks:
+      - net
+    restart: always
+  sonarqube:
+      image: sonarqube
+      container_name: sonarqube
+      ports:
+        - "9000:9000"
+      networks:
+        - net
+      restart: always
+networks:
+  net:
