@@ -4,25 +4,27 @@ on:
     branches:
       - master
 jobs:
-  build:
-    runs-on: ubuntu-latest
-    steps:
-        - name: Clonar repositorio
-        uses: appleboy/ssh-action@master
-        with:
-            host: ${{ secrets.REMOTE_HOST }}
-            username: root
-            key: ${{ secrets.SSH_PRIVATE_KEY }}
-            port: ${{ secrets.PORT }}
-            script: |
-            git clone https://github.com/Ohernandezm/Devops-docker.git
-        - name: Docker Build
-        uses: appleboy/ssh-action@master
-        with:
-            host: ${{ secrets.REMOTE_HOST }}
-            username: root
-            key: ${{ secrets.SSH_PRIVATE_KEY }}
-            port: ${{ secrets.PORT }}
-            script: |
-            cd /home/Devops-docker
-            docker compose -f docker-compose.yml up -d
+    deploy-staging:
+        runs-on: ubuntu-latest
+        timeout-minutes: 30
+        name: Deploy Master
+        steps:
+            - name: Clonar repositorio
+            uses: appleboy/ssh-action@master
+            with:
+                host: ${{ secrets.REMOTE_HOST }}
+                username: root
+                key: ${{ secrets.SSH_PRIVATE_KEY }}
+                port: ${{ secrets.PORT }}
+                script: |
+                git clone https://github.com/Ohernandezm/Devops-docker.git
+            - name: Docker Build
+            uses: appleboy/ssh-action@master
+            with:
+                host: ${{ secrets.REMOTE_HOST }}
+                username: root
+                key: ${{ secrets.SSH_PRIVATE_KEY }}
+                port: ${{ secrets.PORT }}
+                script: |
+                cd /home/Devops-docker
+                docker compose -f docker-compose.yml up -d
