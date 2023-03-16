@@ -31,3 +31,29 @@ jobs:
         SOURCE: email-templates/comments/
         TARGET: /var/path.../
         ARGS: -rlgoDzvc -i -og --chown=user:user
+
+
+
+  runs-on: ubuntu-latest
+        timeout-minutes: 30
+        name: Deploy Obrador Master
+        steps:
+            - name: Pull from GitHub
+              uses: appleboy/ssh-action@master
+              with:
+                  host: ${{ secrets.REMOTE_HOST }}
+                  username: ${{ secrets.REMOTE_HOST }}
+                  key: ${{ secrets.SSH_PRIVATE_KEY }}
+                  source: "jenkins/*"
+                  target: "/home/devops"
+                  strip_components: 1
+            - name: Docker Build
+              uses: appleboy/ssh-action@master
+              with:
+                  host: ${{ secrets.REMOTE_HOST }}
+                  username: ${{ secrets.REMOTE_HOST }}
+                  key: ${{ secrets.SSH_PRIVATE_KEY }}
+                  script: |
+                    cd /home/devops/jenkins
+                    docker compose -f docker-compose.yml up -d
+                  command_timeout: 25m
