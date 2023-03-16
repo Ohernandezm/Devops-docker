@@ -1,39 +1,34 @@
 name: Deploy Templates
-
-# Controla cuándo se ejecutará la acción.
 on:
-  # Activa el workflow en eventos push o pull request pero sólo para la rama que elijas.
   push:
-    branches: [ master ]
- # pull_request:
-   # branches: [ main ]
- 
-  # workflow_dispatch: Le permite ejecutar este workflow manualmente desde la pestaña Acciones.
-  workflow_dispatch:
- 
-# Un workflow se compone de uno o varios jobs que pueden ejecutarse de forma secuencial o en paralelo.
+    branches:
+      - master
 jobs:
-  # Este workflow contiene un solo job llamado "SFTP".
-  deploy-via-sftp:
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v2
-      
-      - name: SFTP Deploy
-        uses: wlixcc/SFTP-Deploy-Action@v1.2.1
-        with:
-          # username: Nombre de usuario con el cual nos conectaremos al servidor.
-          username:  ${{ secrets.REMOTE_USER }} 
-          # server: Nombre del servidor o IP.
-          server:  ${{ secrets.REMOTE_HOST }}
-          port: ${{ secrets.PORT }} 
-          ssh_private_key: ${{ secrets.SSH_PRIVATE_KEY }}
-
-          # local_path: Ruta dentro del repositorio la cual quieres copiar en el servidor,por defecto es ./*
-          local_path: ./*
-          
-          # remote_path: Ruta remota donde se copiaran los archivos del repositorio.
-          remote_path: /home/devops/
-          
-          # SFTP args
-          args: '-o ConnectTimeout=5'
+  deploy:
+        runs-on: ubuntu-latest
+        name: 🚀 Deploy 
+        timeout-minutes: 30 
+        steps:
+            - name: Pull from GitHub
+              uses: appleboy/ssh-action@master
+              env:
+                HOST: ${{ secrets.REMOTE_HOST }}
+                USERNAME: ${{ secrets.REMOTE_USER }}
+                PORT: ${{ secrets.PORT }}
+                KEY: ${{ secrets.SSH_PRIVATE_KEY }}
+              with: 
+                  source: "jenkins/*"
+                  target: "/home/devops"
+                  strip_components: 1
+            - name: Docker Build
+              uses: appleboy/ssh-action@master
+              env:
+                HOST: ${{ secrets.REMOTE_HOST }}
+                USERNAME: ${{ secrets.REMOTE_USER }}
+                PORT: ${{ secrets.PORT }}
+                KEY: ${{ secrets.SSH_PRIVATE_KEY }}
+              with: 
+                  script: |
+                    cd /home/devops/jenkins
+                    docker compose -f docker-compose.yml up -d
+                  command_timeout: 25m
