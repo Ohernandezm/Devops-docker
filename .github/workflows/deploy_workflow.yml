@@ -3,20 +3,19 @@ on:
     workflow_dispatch:
     push:
         branches:
-            - master 
+            - master  
 jobs:
   deploy:
     runs-on: ubuntu-latest
     steps:
-      - name: Deploy Docker
-        uses: appleboy/ssh-action@v0.1.2
-        with:
-          host: ${{secrets.REMOTE_HOST}} # IP address of the server you wish to ssh into
-          key: ${{secrets.SSH_PRIVATE_KEY}} # Private or public key of the server
-          username: ${{ secrets.REMOTE_USER }} # User of the server you want to ssh into
-     
-          script: |
-            mkdir test 
-            cd test 
-            git clone https://github.com/Ohernandezm/Devops-docker.git
-            echo 'Deployment successful to digital ocean' 
+    - name: Deploy app
+      uses: appleboy/ssh-action@v0.1.4
+      with:
+        host: ${{secrets.REMOTE_HOST}}
+        username: ${{ secrets.DO_USERNAME }}
+        password: ${{ secrets.DO_PASSWORD }}
+        
+        script: |
+          cd ~/home/devops
+          git clone https://${{ secrets.ACCESS_TOKEN }}:x-oauth-basic@github.com/Ohernandezm/Devops-docker.git
+          echo "Deployment successful to Digital Ocean"
