@@ -1,34 +1,29 @@
-name: Deploy Templates
+name: Master Deploy
 on:
-  push:
-    branches:
-      - master
+    workflow_dispatch:
+    push:
+        branches:
+            - master
 jobs:
-  deploy:
+    deploy-staging:
         runs-on: ubuntu-latest
-        name: 🚀 Deploy 
-        timeout-minutes: 30 
+        timeout-minutes: 30
+        name: Deploy Obrador Master
         steps:
             - name: Pull from GitHub
               uses: appleboy/ssh-action@master
-              env:
-                HOST: ${{ secrets.REMOTE_HOST }}
-                USERNAME: ${{ secrets.REMOTE_USER }}
-                PORT: ${{ secrets.PORT }}
-                KEY: ${{ secrets.SSH_PRIVATE_KEY }}
-              with: 
-                  source: "./jenkins/*"
-                  target: "/home/devops/"
-                  strip_components: 1
+              with:
+                  host: ${{ secrets.REMOTE_HOST }}
+                  username: ${{ secrets.REMOTE_USER }}
+                  key: ${{ secrets.SSH_PRIVATE_KEY }}
+                  script: cd /home/devops && rm -R Devops-docker && ${{ secrets.CLONE_CMD_SCRIPT }}
             - name: Docker Build
               uses: appleboy/ssh-action@master
-              env:
-                HOST: ${{ secrets.REMOTE_HOST }}
-                USERNAME: ${{ secrets.REMOTE_USER }}
-                PORT: ${{ secrets.PORT }}
-                KEY: ${{ secrets.SSH_PRIVATE_KEY }}
-              with: 
+              with:
+                  host: ${{ secrets.REMOTE_HOST }}
+                  username: ${{ secrets.REMOTE_USER }}
+                  key: ${{ secrets.SSH_PRIVATE_KEY }}
                   script: |
-                    cd /home/devops/jenkins
+                    cd /home/devops/Devops-docker 
                     docker compose -f docker-compose.yml up -d
                   command_timeout: 25m
