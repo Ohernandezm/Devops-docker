@@ -13,14 +13,6 @@ services:
     user: root
     networks:
       - net
-    restart: always
-  sonarqube:
-      image: sonarqube
-      container_name: sonarqube
-      ports:
-        - "9000:9000"
-      networks:
-        - net
-      restart: always
+    restart: alway
 networks:
   net:
