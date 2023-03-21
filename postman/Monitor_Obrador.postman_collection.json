@@ -1,0 +1,888 @@
+{
+	"info": {
+		"_postman_id": "f67903eb-aa5e-414f-871d-01e5cf51e9d9",
+		"name": "Monitor Obrador",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "Subconvocatorias",
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							"const MIGRADOR_URL = pm.environment.get('host_migrador');",
+							"console.log(MIGRADOR_URL)",
+							"const params = pm.globals.get('fromToParamsMigrador');",
+							"const authorization = 'Basic ZmlyZWJhc2VAanVhbmdvLmNvbS51eTpGMXIzYkBzMw==';",
+							"let sub_convocatorias = [];",
+							"",
+							"// Get sub convocatorias migrador",
+							"let URL_FIRST = `${MIGRADOR_URL}sub-convocatorias?${params}` ",
+							" ",
+							"",
+							"",
+							"const getData = (url) => {",
+							"    pm.sendRequest({",
+							"        url: url,",
+							"        method: 'GET',",
+							"        header: {",
+							"            'content-type': 'application/json',",
+							"            'authorization': authorization",
+							"        }",
+							"        }, (err, res) => {",
+							"            if (err) {",
+							"                throw new Error(err);",
+							"            }",
+							"            const response = res.json()",
+							"            const data = response.data || [];",
+							"            sub_convocatorias = sub_convocatorias.concat(data);",
+							"            // Recursive call.",
+							"            if (response.links.next) {",
+							"                getData(response.links.next);",
+							"            } else { ",
+							"                pm.collectionVariables.set('sub_convocatorias_migrador', JSON.stringify(sub_convocatorias));",
+							"            } ",
+							"        }",
+							"    );",
+							"};",
+							"",
+							"getData(URL_FIRST);",
+							"",
+							"",
+							"",
+							"",
+							""
+						],
+						"type": "text/javascript"
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test('Cada sub convocatoria debe estar en migrador.', () => { ",
+							"    const data = pm.response.json();",
+							"    const subConvocatorias = data;",
+							"    const subConvocatoriaMigrador = JSON.parse(pm.collectionVariables.get('sub_convocatorias_migrador'));",
+							"    if (!subConvocatoriaMigrador) {",
+							"        pm.expect.fail('No hay convocatorias en migrador.')",
+							"    }",
+							"    const find = (id) => subConvocatoriaMigrador.find(c => c.id === id);",
+							"    const notInMigrador = [];",
+							"    for (const subConvocatoria of subConvocatorias) {",
+							"        pm.expect(subConvocatoria).to.be.an('object');",
+							"        // Migrador no guarda Sub convocatorias Canceladas o Pendientes",
+							"        if (!['CANCELADA', 'PENDIENTE'].includes(subConvocatoria.estado)) {",
+							"            const element = find(subConvocatoria.id);",
+							"            if (!element) {",
+							"                console.log(`${subConvocatoria.id} no existe en migrador`);",
+							"                notInMigrador.push(subConvocatoria);",
+							"            }",
+							"        }",
+							"    }",
+							"    if (notInMigrador.length > 0) {",
+							"        pm.expect.fail(`Las sub convocatorias de obrador: [${notInMigrador.map(c => c.id).join(',')}] No se encuentran en migrador`)",
+							"    }",
+							"    pm.collectionVariables.unset('sub_convocatorias_migrador')",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{token}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "GET",
+				"header": [
+					{
+						"key": "token",
+						"type": "text",
+						"value": "eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6Imp1YW5nb0BqdWFuZ28uY29tLnV5IiwiaWQiOjIsImlhdCI6MTYzOTQxMjM2NSwiZXhwIjo0NzkzMDEyMzY1fQ.lhVaQlmKxCMApFFDi-LLfmaAmzaD5MFMOOVlOCXgTljz0y_UflSx8LujpLHm4E40J4ddaCHdYubQ31AnxQ5_oA",
+						"disabled": true
+					}
+				],
+				"url": {
+					"raw": "{{obrador}}sub-convocatorias?{{fromToParams}}",
+					"host": [
+						"{{obrador}}sub-convocatorias"
+					],
+					"query": [
+						{
+							"key": "{{fromToParams}}",
+							"value": null
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Convocatorias all",
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							"const MIGRADOR_URL = pm.environment.get('host_migrador');",
+							"const params = pm.globals.get('fromToParamsMigrador');",
+							"const authorization = 'Basic ZmlyZWJhc2VAanVhbmdvLmNvbS51eTpGMXIzYkBzMw==';",
+							"let convocatorias = [];",
+							"",
+							"// Get convocatorias migrador",
+							"",
+							"let URL_FIRST = `${MIGRADOR_URL}convocatorias?${params}`  ",
+							"",
+							"",
+							"const getData = (url) => {",
+							"    pm.sendRequest({",
+							"        url: url,",
+							"        method: 'GET',",
+							"        header: {",
+							"            'content-type': 'application/json',",
+							"            'authorization': authorization",
+							"        }",
+							"            ",
+							"        }, (err, res) => {",
+							"            if (err) {",
+							"                throw new Error(err);",
+							"            }",
+							"            const response = res.json()",
+							"            const data = response.data || [];",
+							"            convocatorias = convocatorias.concat(data);",
+							"            // Recursive call.",
+							"            if (response.links.next) {",
+							"                getData(response.links.next);",
+							"            } else {",
+							"                // Guardar en variable global.",
+							"                pm.collectionVariables.set('convocatorias_migrador', JSON.stringify(convocatorias));",
+							"            } ",
+							"        }",
+							"    );",
+							"};",
+							"",
+							"getData(URL_FIRST);",
+							"",
+							"",
+							"",
+							"",
+							""
+						],
+						"type": "text/javascript"
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test('Cada convocatoria debe estar en migrador', () => {",
+							"    const data = pm.response.json()['data'];",
+							"    const convocatoriaMigrador = JSON.parse(pm.collectionVariables.get('convocatorias_migrador')); ",
+							"    if (!convocatoriaMigrador) {",
+							"        pm.expect.fail('No hay convocatorias en migrador.')",
+							"    }",
+							"    const find = (id) => convocatoriaMigrador.find(c => c.id === id);",
+							"    const notInMigrador = [];",
+							"    for (const convocatoria of data) {",
+							"        pm.expect(convocatoria).to.be.an('object');",
+							"        // Migrador no guarda convocatorias Canceladas o Preparadas",
+							"        if (!['CANCELADA', 'PREPARADA', 'ELIMINADA'].includes(convocatoria.estado)) {",
+							"            const element = find(convocatoria.id);",
+							"            if (!element) {",
+							"                console.log(`${convocatoria.id} no existe en migrador`);",
+							"                notInMigrador.push(convocatoria);",
+							"            }",
+							"        }",
+							"    }",
+							"    if (notInMigrador.length > 0) {",
+							"        pm.expect.fail(`Las convocatorias de obrador: [${notInMigrador.map(c => c.id).join(',')}] No se encuentran en migrador`)",
+							"    }",
+							"    pm.collectionVariables.unset('convocatorias_migrador')",
+							"});",
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{token}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "GET",
+				"header": [
+					{
+						"key": "token",
+						"value": "eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6Imp1YW5nb0BqdWFuZ28uY29tLnV5IiwiaWQiOjIsImlhdCI6MTYzOTQxMjM2NSwiZXhwIjo0NzkzMDEyMzY1fQ.lhVaQlmKxCMApFFDi-LLfmaAmzaD5MFMOOVlOCXgTljz0y_UflSx8LujpLHm4E40J4ddaCHdYubQ31AnxQ5_oA",
+						"type": "text",
+						"disabled": true
+					}
+				],
+				"url": {
+					"raw": "{{obrador}}convocatorias/all?{{fromToParams}}",
+					"host": [
+						"{{obrador}}convocatorias"
+					],
+					"path": [
+						"all"
+					],
+					"query": [
+						{
+							"key": "from",
+							"value": "",
+							"disabled": true
+						},
+						{
+							"key": "to",
+							"value": "",
+							"disabled": true
+						},
+						{
+							"key": "token",
+							"value": "eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6Imp1YW5nb0BqdWFuZ28uY29tLnV5IiwiaWQiOjIsImlhdCI6MTYzOTQxMjM2NSwiZXhwIjo0NzkzMDEyMzY1fQ.lhVaQlmKxCMApFFDi-LLfmaAmzaD5MFMOOVlOCXgTljz0y_UflSx8LujpLHm4E40J4ddaCHdYubQ31AnxQ5_oA",
+							"disabled": true
+						},
+						{
+							"key": "{{fromToParams}}",
+							"value": null
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Reservas",
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							"const MIGRADOR_URL = pm.environment.get('host_migrador');",
+							"const params = pm.globals.get('fromToParamsMigradorDia');",
+							"const authorization = 'Basic ZmlyZWJhc2VAanVhbmdvLmNvbS51eTpGMXIzYkBzMw==';",
+							"let reservas = [];",
+							"",
+							"// Get convocatorias migrador ",
+							"let URL_FIRST = `${MIGRADOR_URL}reservas?${params}`  ",
+							"",
+							"",
+							"const getData = (url) => {",
+							"    pm.sendRequest({",
+							"        url: url,",
+							"        method: 'GET',",
+							"        header: {",
+							"            'content-type': 'application/json',",
+							"            'authorization': authorization",
+							"        }",
+							"            ",
+							"        }, (err, res) => {",
+							"            if (err) {",
+							"                throw new Error(err);",
+							"            }",
+							"            const response = res.json()",
+							"            const data = response.data || [];",
+							"            reservas = reservas.concat(data); ",
+							"            // Recursive call.",
+							"            if (response.links.next) {",
+							"                getData(response.links.next);",
+							"            } else {",
+							"                // Guardar en variable global.",
+							"                pm.collectionVariables.set('reservas_migrador', JSON.stringify(reservas));",
+							"            } ",
+							"        }",
+							"    );",
+							"};",
+							"",
+							"getData(URL_FIRST);",
+							"",
+							"",
+							"",
+							"",
+							""
+						],
+						"type": "text/javascript"
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test('Cada reserva debe estar en obrador', () => {",
+							"    const data = pm.response.json()['data'];",
+							"    const reservasMigrador = JSON.parse(pm.collectionVariables.get('reservas_migrador'));",
+							"    if (!reservasMigrador) {",
+							"        pm.expect.fail('No hay reservas en migrador.')",
+							"    } ",
+							"    const find = (id) => data.find(r => r.id_migrador === id);",
+							"    const notInMigrador = [];",
+							"    for (const reserva of reservasMigrador) {",
+							"        pm.expect(reserva).to.be.an('object');",
+							"        const element = find(reserva.id);",
+							"        if (!element) {",
+							"            console.log(`${reserva.id} no existe en obrador, servicio up: ${reserva.gaudi2_servicio}`);",
+							"            notInMigrador.push(reserva);",
+							"        }",
+							"    }",
+							"    if (notInMigrador.length > 0) {",
+							"        pm.expect.fail(`Las reservas de migrador: [${notInMigrador.map(c => c.id).join(',')}] No se encuentran en obrador`)",
+							"    }",
+							"    pm.collectionVariables.unset('reservas_migrador')",
+							"});",
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{token}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "GET",
+				"header": [
+					{
+						"key": "token",
+						"value": "eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6Imp1YW5nb0BqdWFuZ28uY29tLnV5IiwiaWQiOjIsImlhdCI6MTYzOTQxMjM2NSwiZXhwIjo0NzkzMDEyMzY1fQ.lhVaQlmKxCMApFFDi-LLfmaAmzaD5MFMOOVlOCXgTljz0y_UflSx8LujpLHm4E40J4ddaCHdYubQ31AnxQ5_oA",
+						"type": "text",
+						"disabled": true
+					}
+				],
+				"body": {
+					"mode": "formdata",
+					"formdata": []
+				},
+				"url": {
+					"raw": "{{obrador}}reservas/?incluir_cerrados=true&cierre_operaciones=true&{{fromParams}}",
+					"host": [
+						"{{obrador}}reservas"
+					],
+					"path": [
+						""
+					],
+					"query": [
+						{
+							"key": "from",
+							"value": "",
+							"disabled": true
+						},
+						{
+							"key": "to",
+							"value": "",
+							"disabled": true
+						},
+						{
+							"key": "token",
+							"value": "eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6Imp1YW5nb0BqdWFuZ28uY29tLnV5IiwiaWQiOjIsImlhdCI6MTYzOTQxMjM2NSwiZXhwIjo0NzkzMDEyMzY1fQ.lhVaQlmKxCMApFFDi-LLfmaAmzaD5MFMOOVlOCXgTljz0y_UflSx8LujpLHm4E40J4ddaCHdYubQ31AnxQ5_oA",
+							"disabled": true
+						},
+						{
+							"key": "incluir_cerrados",
+							"value": "true"
+						},
+						{
+							"key": "cierre_operaciones",
+							"value": "true"
+						},
+						{
+							"key": "{{fromParams}}",
+							"value": null
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Viajes",
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							"const MIGRADOR_URL = pm.environment.get('host_migrador');",
+							"const params = pm.globals.get('fromToParamsMigrador');",
+							"const authorization = 'Basic ZmlyZWJhc2VAanVhbmdvLmNvbS51eTpGMXIzYkBzMw==';",
+							"let nominaciones = [];",
+							"",
+							"// Get convocatorias migrador",
+							"let URL_FIRST = `${MIGRADOR_URL}nominaciones?${params}` ",
+							"console.log(`PRIMERA URL ${URL_FIRST}`);",
+							"",
+							"",
+							"const getData = (url) => {",
+							"    pm.sendRequest({",
+							"        url: url,",
+							"        method: 'GET',",
+							"        header: {",
+							"            'content-type': 'application/json',",
+							"            'authorization': authorization",
+							"        }",
+							"            ",
+							"        }, (err, res) => {",
+							"            if (err) {",
+							"                throw new Error(err);",
+							"            }",
+							"            const response = res.json()",
+							"            const data = response.data || [];",
+							"            nominaciones = nominaciones.concat(data);",
+							"            // Recursive call.",
+							"            if (response.links.next) {",
+							"                getData(response.links.next);",
+							"            } else {",
+							"                // Guardar en variable global.",
+							"                pm.collectionVariables.set('nominaciones_migrador', JSON.stringify(nominaciones));",
+							"            } ",
+							"        }",
+							"    );",
+							"};",
+							"",
+							"getData(URL_FIRST);",
+							"",
+							"",
+							"",
+							"",
+							""
+						],
+						"type": "text/javascript"
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test('Cada nominacion a viaje debe estar en migrador', () => {",
+							"    const data = pm.response.json()['data'];",
+							"    const nominacionesMigrador = JSON.parse(pm.collectionVariables.get('nominaciones_migrador'));",
+							"    if (!nominacionesMigrador) {",
+							"        pm.expect.fail('No hay nominaciones en migrador.')",
+							"    }",
+							"    const find = (id) => nominacionesMigrador.find(n => n.id_nominacion === id);",
+							"    const notInMigrador = [];",
+							"    for (const nominacion of data) {",
+							"        pm.expect(nominacion).to.be.an('object'); ",
+							"            const element = find(nominacion.id);",
+							"            if (!element) {",
+							"                console.log(`${nominacion.id} no existe en migrador`);",
+							"                notInMigrador.push(nominacion);",
+							"            } ",
+							"    }",
+							"    if (notInMigrador.length > 0) {",
+							"        pm.expect.fail(`Las nominaciones de obrador: [${notInMigrador.map(c => c.id).join(',')}] No se encuentran en migrador`)",
+							"    }",
+							"    pm.collectionVariables.unset('nominaciones_migrador')",
+							"});",
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{token}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "GET",
+				"header": [
+					{
+						"key": "token",
+						"value": "eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6Imp1YW5nb0BqdWFuZ28uY29tLnV5IiwiaWQiOjIsImlhdCI6MTYzOTQxMjM2NSwiZXhwIjo0NzkzMDEyMzY1fQ.lhVaQlmKxCMApFFDi-LLfmaAmzaD5MFMOOVlOCXgTljz0y_UflSx8LujpLHm4E40J4ddaCHdYubQ31AnxQ5_oA",
+						"type": "text",
+						"disabled": true
+					}
+				],
+				"url": {
+					"raw": "{{obrador}}viajes/?{{fromToParams}}",
+					"host": [
+						"{{obrador}}viajes"
+					],
+					"path": [
+						""
+					],
+					"query": [
+						{
+							"key": "from",
+							"value": "",
+							"disabled": true
+						},
+						{
+							"key": "to",
+							"value": "",
+							"disabled": true
+						},
+						{
+							"key": "token",
+							"value": "eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6Imp1YW5nb0BqdWFuZ28uY29tLnV5IiwiaWQiOjIsImlhdCI6MTYzOTQxMjM2NSwiZXhwIjo0NzkzMDEyMzY1fQ.lhVaQlmKxCMApFFDi-LLfmaAmzaD5MFMOOVlOCXgTljz0y_UflSx8LujpLHm4E40J4ddaCHdYubQ31AnxQ5_oA",
+							"disabled": true
+						},
+						{
+							"key": "{{fromToParams}}",
+							"value": null
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Viajes App",
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							"const MIGRADOR_URL = pm.environment.get('host_migrador');",
+							"const params = pm.globals.get('fromToParamsMigradorDia');",
+							"const authorization = 'Basic ZmlyZWJhc2VAanVhbmdvLmNvbS51eTpGMXIzYkBzMw==';",
+							"let viajes = [];",
+							"",
+							"// Get convocatorias migrador",
+							"let URL_FIRST = `${MIGRADOR_URL}viajes?${params}` ",
+							"",
+							"",
+							"const getData = (url) => {",
+							"    pm.sendRequest({",
+							"        url: url,",
+							"        method: 'GET',",
+							"        header: {",
+							"            'content-type': 'application/json',",
+							"            'authorization': authorization",
+							"        }",
+							"            ",
+							"        }, (err, res) => {",
+							"            if (err) {",
+							"                throw new Error(err);",
+							"            }",
+							"            const response = res.json()",
+							"            const data = response.data || [];",
+							"            viajes = viajes.concat(data);",
+							"            // Recursive call.",
+							"            if (response.links.next) {",
+							"                getData(response.links.next);",
+							"            } else {",
+							"                // Guardar en variable global.",
+							"                pm.collectionVariables.set('viajes_migrador', JSON.stringify(viajes));",
+							"            } ",
+							"        }",
+							"    );",
+							"};",
+							"",
+							"getData(URL_FIRST);",
+							"",
+							"",
+							""
+						],
+						"type": "text/javascript"
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test('Cada viaje app asociado a viaje obrador', () => {",
+							"    const data = pm.response.json()['data'];",
+							"    const viajesMigrador = JSON.parse(pm.collectionVariables.get('viajes_migrador'));",
+							"    if (!viajesMigrador) {",
+							"        pm.expect.fail('No hay viajes en migrador.')",
+							"    }",
+							"    const find = (id) => data.find(v => v.id_migrador === id);",
+							"    const notInMigrador = [];",
+							"    for (const viaje of viajesMigrador) {",
+							"        pm.expect(viaje).to.be.an('object'); ",
+							"            const element = find(viaje.id);",
+							"            if (!element) {",
+							"                console.log(`${viaje.id} no existe en obrador`);",
+							"                notInMigrador.push(viaje);",
+							"            } ",
+							"    }",
+							"    if (notInMigrador.length > 0) {",
+							"        pm.expect.fail(`El viaje app: [${notInMigrador.map(c => c.id).join(',')}] No se encuentran relacionado en obrador`)",
+							"    }",
+							"    pm.collectionVariables.unset('viajes_migrador')",
+							"});",
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{token}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "GET",
+				"header": [
+					{
+						"key": "token",
+						"value": "eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6Imp1YW5nb0BqdWFuZ28uY29tLnV5IiwiaWQiOjIsImlhdCI6MTYzOTQxMjM2NSwiZXhwIjo0NzkzMDEyMzY1fQ.lhVaQlmKxCMApFFDi-LLfmaAmzaD5MFMOOVlOCXgTljz0y_UflSx8LujpLHm4E40J4ddaCHdYubQ31AnxQ5_oA",
+						"type": "text",
+						"disabled": true
+					}
+				],
+				"url": {
+					"raw": "{{obrador}}viajes/?limit=500&{{fromToParamsMigradorDia}}",
+					"host": [
+						"{{obrador}}viajes"
+					],
+					"path": [
+						""
+					],
+					"query": [
+						{
+							"key": "from",
+							"value": "",
+							"disabled": true
+						},
+						{
+							"key": "to",
+							"value": "",
+							"disabled": true
+						},
+						{
+							"key": "token",
+							"value": "eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6Imp1YW5nb0BqdWFuZ28uY29tLnV5IiwiaWQiOjIsImlhdCI6MTYzOTQxMjM2NSwiZXhwIjo0NzkzMDEyMzY1fQ.lhVaQlmKxCMApFFDi-LLfmaAmzaD5MFMOOVlOCXgTljz0y_UflSx8LujpLHm4E40J4ddaCHdYubQ31AnxQ5_oA",
+							"disabled": true
+						},
+						{
+							"key": "limit",
+							"value": "500"
+						},
+						{
+							"key": "{{fromToParamsMigradorDia}}",
+							"value": null
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Matriculas",
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							"const MIGRADOR_URL = pm.environment.get('host_migrador');",
+							"const authorization = 'Basic ZmlyZWJhc2VAanVhbmdvLmNvbS51eTpGMXIzYkBzMw==';",
+							"let matriculas = [];",
+							"",
+							"// Get convocatorias migrador",
+							"",
+							"let URL_FIRST = `${MIGRADOR_URL}app-matriculas`  ",
+							"",
+							"",
+							"const getData = (url) => {",
+							"    pm.sendRequest({",
+							"        url: url,",
+							"        method: 'GET',",
+							"        header: {",
+							"            'content-type': 'application/json',",
+							"            'authorization': authorization",
+							"        }",
+							"            ",
+							"        }, (err, res) => {",
+							"            if (err) {",
+							"                throw new Error(err);",
+							"            }",
+							"            const response = res.json()",
+							"            const data = response.data || [];",
+							"            matriculas = matriculas.concat(data);",
+							"            // Recursive call.",
+							"            if (response.links.next) {",
+							"                getData(response.links.next);",
+							"            } else {",
+							"                // Guardar en variable global.",
+							"                pm.collectionVariables.set('matriculas_migrador', JSON.stringify(matriculas));",
+							"            } ",
+							"        }",
+							"    );",
+							"};",
+							"",
+							"getData(URL_FIRST);",
+							"",
+							"",
+							"",
+							"",
+							""
+						],
+						"type": "text/javascript"
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test('Cada matricula debe estar en migrador', () => {",
+							"    const data = pm.response.json()['data'];",
+							"    const matriculasMigrador = JSON.parse(pm.collectionVariables.get('matriculas_migrador'));",
+							"    if (!matriculasMigrador) {",
+							"        pm.expect.fail('No hay matriculas en migrador.')",
+							"    } ",
+							"    const find = (id) => matriculasMigrador.find(m => m.id === id);",
+							"    const notInMigrador = [];",
+							"    for (const matricula of data) {",
+							"        pm.expect(matricula).to.be.an('object'); ",
+							"            const element = find(matricula.id_migrador);",
+							"            if (!element) {",
+							"                console.log(`${matricula.id_migrador} no existe en migrador`);",
+							"                notInMigrador.push(matricula);",
+							"            } ",
+							"    }",
+							"    if (notInMigrador.length > 0) {",
+							"        pm.expect.fail(`Las matricula de obrador: [${notInMigrador.map(c => c.id_migrador).join(',')}] No se encuentran en migrador`)",
+							"    }",
+							"    pm.collectionVariables.unset('matriculas_migrador')",
+							"});",
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{token}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "GET",
+				"header": [
+					{
+						"key": "token",
+						"value": "eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6Imp1YW5nb0BqdWFuZ28uY29tLnV5IiwiaWQiOjIsImlhdCI6MTYzOTQxMjM2NSwiZXhwIjo0NzkzMDEyMzY1fQ.lhVaQlmKxCMApFFDi-LLfmaAmzaD5MFMOOVlOCXgTljz0y_UflSx8LujpLHm4E40J4ddaCHdYubQ31AnxQ5_oA",
+						"type": "text",
+						"disabled": true
+					}
+				],
+				"url": {
+					"raw": "{{obrador}}motorizados",
+					"host": [
+						"{{obrador}}motorizados"
+					],
+					"query": [
+						{
+							"key": "from",
+							"value": "",
+							"disabled": true
+						},
+						{
+							"key": "to",
+							"value": "",
+							"disabled": true
+						},
+						{
+							"key": "token",
+							"value": "eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6Imp1YW5nb0BqdWFuZ28uY29tLnV5IiwiaWQiOjIsImlhdCI6MTYzOTQxMjM2NSwiZXhwIjo0NzkzMDEyMzY1fQ.lhVaQlmKxCMApFFDi-LLfmaAmzaD5MFMOOVlOCXgTljz0y_UflSx8LujpLHm4E40J4ddaCHdYubQ31AnxQ5_oA",
+							"disabled": true
+						}
+					]
+				}
+			},
+			"response": []
+		}
+	],
+	"auth": {
+		"type": "bearer",
+		"bearer": [
+			{
+				"key": "token",
+				"value": "{{token_prod}} ",
+				"type": "string"
+			}
+		]
+	},
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					"const ONE_DAY_MS = (3600 * 1000 * 24); ",
+					"var moment = require ('moment');",
+					"",
+					"const today = new Date();",
+					"// Sum one day ",
+					"const tomorrow = new Date(today.getTime() + ONE_DAY_MS);",
+					"// generar str params para las api",
+					"const from = moment(today).format('YYYY-MM-DD');",
+					"const to  = moment(tomorrow).format('YYYY-MM-DD');",
+					"const fromToParams = `from=${from}&to=${to}`;",
+					"  ",
+					"/**",
+					" * Migrador pide mas rango porque el criterio de busqueda es distinto al de obrador.",
+					" */",
+					"// fecha migrador = ayer",
+					"const fromMigrador =  moment(new Date(today.getTime() - (ONE_DAY_MS*7))).format('YYYY-MM-DD');",
+					"// pasado manana",
+					"const toMigrador =  moment(new Date(today.getTime() + (ONE_DAY_MS*3))).format('YYYY-MM-DD');",
+					"",
+					"const fromToParamsMigrador = `from=${fromMigrador}&to=${toMigrador}`;",
+					"const fromToParamsMigradorDia = `from=${from}&to=${from}`;",
+					"const fromParamsDia = `from=${from}T03:00:00.000Z`;",
+					"",
+					"pm.globals.set('fromToParams', fromToParams);",
+					"pm.globals.set('fromParams', fromParamsDia);",
+					"pm.globals.set('fromToParamsMigrador', fromToParamsMigrador);",
+					"pm.globals.set('fromToParamsMigradorDia', fromToParamsMigradorDia);",
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		}
+	]
+}
