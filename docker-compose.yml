@@ -13,6 +13,7 @@ services:
     user: root
     networks:
       - net
-    restart: alway
+    restart: always
+
 networks:
   net:
