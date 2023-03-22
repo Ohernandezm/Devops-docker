@@ -28,6 +28,7 @@ pipeline {
     stage('Build Docker') {
       steps {
         sh 'docker compose up -d'
+        sh 'npm run typeorm migration:run'
         sh 'docker ps'
       }
     }
