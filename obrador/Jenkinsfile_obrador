@@ -16,16 +16,20 @@ pipeline {
       }
     }
     */ 
-    stage('Clone repository') {
-      steps {
-        sh 'ls'
-        sh 'pwd'
+    stage('Clone repository 1') {
+      steps { 
         git branch: 'master',
         credentialsId: 'github_jenkins_access',
-        url: 'https://github.com/Ohernandezm/Obrador-copy.git'
-        sh 'cp -r /home/Devops-docker/obrador/* ./'
-        sh 'ls'
-        sh 'pwd'
+        url: 'https://github.com/Ohernandezm/Obrador-copy.git' 
+        sh 'cp -r Obrador-copy/* $WORKSPACE/'
+      }
+    }
+    stage('Clone repository 1') {
+      steps { 
+        git branch: 'master',
+        credentialsId: 'github_jenkins_access',
+        url: 'https://github.com/Ohernandezm/Devops-docker.git' 
+        sh 'cp -r Devops-docker/* $WORKSPACE/'
       }
     }
 
