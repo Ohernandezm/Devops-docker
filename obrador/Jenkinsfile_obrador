@@ -7,7 +7,7 @@ pipeline {
         checkout scm
       }
     }
-
+/*
     stage('Install Dependencies') {
       steps {
         sh 'npm install -g newman'
@@ -15,15 +15,16 @@ pipeline {
         sh 'npm install'
       }
     }
+    */
 
     stage('Clone repository') {
       steps {
+        sh 'ls' 
+        sh 'pwd'
         git branch: 'master',
         credentialsId: 'github_jenkins_access',
         url: 'https://github.com/Ohernandezm/Obrador-copy.git'
-        sh 'ls'
-        sh 'pwd'
-        sh 'cd ..'
+        sh 'ls' 
         sh 'pwd'
       }
     }
