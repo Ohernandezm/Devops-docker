@@ -16,7 +16,10 @@ pipeline {
             }
             stage('Test Postman') {
                 steps { 
-                    sh 'cd ../postman'
+                    sh 'cd ..'
+                    sh 'ls'
+                    sh 'cd /postman'
+                    sh 'ls'
                     sh 'newman run  Monitor_Obrador.postman_collection.json -e  Obrador_Prod.postman_environment.json' 
                 }
             }
