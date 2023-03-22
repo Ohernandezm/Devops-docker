@@ -19,7 +19,7 @@ jobs:
                 script: | 
                     cd /home/Devops-docker
                     git checkout master
-                    git pull master
+                    git pull
           - name: Docker Build
             uses: appleboy/ssh-action@master
             with:
