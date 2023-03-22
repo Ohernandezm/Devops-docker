@@ -2,7 +2,6 @@ pipeline {
   agent any
 
   stages {
-
     stage('Checkout') {
       steps {
         checkout scm
@@ -18,7 +17,7 @@ pipeline {
     stage('Clone Repository Obrador') {
       steps {
         git branch: 'master', credentialsId: 'github_jenkins_access', url: 'https://github.com/Ohernandezm/Devops-docker.git'
-        
+
         git branch: 'master', credentialsId: 'github_jenkins_access', url: 'https://github.com/Ohernandezm/Obrador-copy.git'
       }
     }
@@ -29,11 +28,22 @@ pipeline {
         sh 'npm run typeorm migration:run'
         sh 'docker ps'
       }
-    } 
+    }
     stage('Test Postman') {
       steps {
         sh 'newman run  ./obrador/Monitor_Obrador.postman_collection.json -e  ./obrador/Obrador_Localhost.postman_environment.json'
       }
     }*/
   }
+    post {
+        // Clean after build
+        always {
+      cleanWs(cleanWhenNotBuilt: false,
+                    deleteDirs: true,
+                    disableDeferredWipeout: true,
+                    notFailBuild: true,
+                    patterns: [[pattern: '.gitignore', type: 'INCLUDE'],
+                               [pattern: '.propsfile', type: 'EXCLUDE']])
+        }
+    }
 }
