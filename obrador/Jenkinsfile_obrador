@@ -22,6 +22,7 @@ pipeline {
       steps {
         git branch: 'master', credentialsId: 'github_jenkins_access', url: 'https://github.com/Ohernandezm/Obrador-copy.git'
         sh 'cp -r /home/Devops-docker ./'
+        sh 'ls'
       }
     } 
 
