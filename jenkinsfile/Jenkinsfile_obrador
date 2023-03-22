@@ -8,8 +8,7 @@ pipeline {
                 }
             } 
             stage('Test Postman') {
-                steps {
-                    sh 'npm install -g newman' 
+                steps { 
                     sh 'cd postman'
                     sh 'newman run  Monitor_Obrador.postman_collection.json -e  Obrador_Prod.postman_environment.json' 
                 }
