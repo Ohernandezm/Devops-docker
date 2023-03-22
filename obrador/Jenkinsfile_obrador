@@ -11,6 +11,7 @@ pipeline {
     stage('Install Dependencies') {
       steps {
         sh 'npm install -g newman'
+        sh 'npm install -g newman-reporter-html'
         sh 'npm install'
       }
     }
