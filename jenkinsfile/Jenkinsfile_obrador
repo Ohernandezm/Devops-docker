@@ -1,16 +1,19 @@
-
-pipeline {    
-agent {
-        docker { 
-            image 'postman/newman_ubuntu1404:2.1.2'
-        }
+pipeline {
+  agent any
+  
+  stages {
+    stage('Checkout') {
+      steps {
+        checkout scm
+      }
     }
-        stages {
-            stage('Probar si funciona Docker') {
-                steps {
-                    sh 'docker version'
-                }
-            } 
+    
+    stage('Install Dependencies') {
+      steps {
+        sh 'npm install -g newman'
+        sh 'npm install'
+      }
+    }
             stage('Test Postman') {
                 steps { 
                     sh 'cd postman'
