@@ -17,10 +17,8 @@ jobs:
                 key: ${{ secrets.SSH_PRIVATE_KEY }}
                 port: ${{ secrets.PORT }}
                 script: | 
-                    cd /home/Devops-docker
-                    ls
-                    rm *
-                    ls
+                    cd /home/Devops-docker 
+                    sudo rm * 
                     git clone https://github.com/Ohernandezm/Devops-docker.git
 
           - name: Docker Build
