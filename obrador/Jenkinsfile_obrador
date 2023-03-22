@@ -1,27 +1,27 @@
 pipeline {
   agent any
-  
-            stages {
-              stage('Checkout') {
-                steps {
-                  checkout scm
-                }
-              }
-    
-            stage('Install Dependencies') {
-              steps {
-                sh 'npm install -g newman'
-                sh 'npm install'
-              }
-            }
-            stage('Test Postman') {
-                steps {   
-                    sh 'newman run  ./obrador/Monitor_Obrador.postman_collection.json -e  ./obrador/Obrador_Prod.postman_environment.json -r html"'
-                       }
-            }
-            stage('Publish Newman Report') {
-            steps {
-                publishHTML(target: [
+
+  stages {
+    stage('Checkout') {
+      steps {
+        checkout scm
+      }
+    }
+
+    stage('Install Dependencies') {
+      steps {
+        sh 'npm install -g newman'
+        sh 'npm install'
+      }
+    }
+    stage('Test Postman') {
+      steps {
+        sh 'newman run  ./obrador/Monitor_Obrador.postman_collection.json -e  ./obrador/Obrador_Prod.postman_environment.json -r html'
+      }
+    }
+    stage('Publish Newman Report') {
+      steps {
+        publishHTML(target: [
                     allowMissing: false,
                     alwaysLinkToLastBuild: false,
                     keepAll: true,
@@ -29,8 +29,7 @@ pipeline {
                     reportFiles: 'newman-report-*.html',
                     reportName: 'Newman Report'
                 ])
-            }
-        }
-        
-        }
+      }
+    }
+  }
 }
