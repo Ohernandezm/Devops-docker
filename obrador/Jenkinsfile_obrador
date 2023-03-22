@@ -15,9 +15,10 @@ pipeline {
     
     stage('Clone repository 1') {
       steps {
-        sh 'ls'
+        sh 'pwd'
+        sh 'mkdir -d repos'
         git branch: 'master', credentialsId: 'github_jenkins_access', url: 'https://github.com/Ohernandezm/Obrador-copy.git'
-        sh 'cd /home/Devops-docker' 
+        sh 'pwd' 
         sh 'ls'
       }
     } 
