@@ -18,7 +18,9 @@ jobs:
                 port: ${{ secrets.PORT }}
                 script: | 
                     cd /home/Devops-docker
+                    ls
                     rm *
+                    ls
                     git clone https://github.com/Ohernandezm/Devops-docker.git
 
           - name: Docker Build
