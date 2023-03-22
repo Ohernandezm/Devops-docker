@@ -1,6 +1,10 @@
 pipeline {
   agent any
 
+  options {
+        // This is required if you want to clean before build
+        skipDefaultCheckout(true)
+  }
   stages {
     stage('Checkout') {
       steps {
@@ -16,9 +20,17 @@ pipeline {
     }*/
     stage('Clone Repository Obrador') {
       steps {
+        sh 'ls'
         git branch: 'master', credentialsId: 'github_jenkins_access', url: 'https://github.com/Ohernandezm/Devops-docker.git'
 
         git branch: 'master', credentialsId: 'github_jenkins_access', url: 'https://github.com/Ohernandezm/Obrador-copy.git'
+        sh 'ls'
+        sh 'cd ..'
+        sh 'ls'
+        sh 'cd ..'
+        sh 'ls'
+        sh 'cd ..'
+        sh 'ls'
       }
     }
     /*
