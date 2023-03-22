@@ -15,26 +15,16 @@ pipeline {
         sh 'npm install'
       }
     }
-    */
-   stage('Clone repository') {
-      steps {
-        sh 'ls' 
-        sh 'pwd'
-        git branch: 'master',
-        credentialsId: 'github_jenkins_access',
-        url: 'https://github.com/Ohernandezm/Devops-docker.git'
-        sh 'ls' 
-        sh 'pwd'
-      }
-    }
+    */ 
     stage('Clone repository') {
       steps {
-        sh 'ls' 
+        sh 'ls'
         sh 'pwd'
         git branch: 'master',
         credentialsId: 'github_jenkins_access',
         url: 'https://github.com/Ohernandezm/Obrador-copy.git'
-        sh 'ls' 
+        sh 'cp -r /home/Devops-docker/obrador/* ./'
+        sh 'ls'
         sh 'pwd'
       }
     }
@@ -45,7 +35,7 @@ pipeline {
         sh 'npm run typeorm migration:run'
         sh 'docker ps'
       }
-    }
+   }
 
     stage('Test Postman') {
       steps {
