@@ -17,9 +17,10 @@ jobs:
                 key: ${{ secrets.SSH_PRIVATE_KEY }}
                 port: ${{ secrets.PORT }}
                 script: | 
-                    cd /home/Devops-docker 
+                    cd /home/Devops-docker
                     rm *
-                    git pull
+                    git clone https://github.com/Ohernandezm/Devops-docker.git
+
           - name: Docker Build
             uses: appleboy/ssh-action@master
             with:
