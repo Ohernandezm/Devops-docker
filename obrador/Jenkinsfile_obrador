@@ -18,15 +18,21 @@ pipeline {
     */ 
     stage('Clone repository 1') {
       steps { 
+        sh 'pwd'
         sh 'mkdir -p Obrador-copy'
+        sh 'pwd'
         sh 'cd Obrador-copy'
+        sh 'pwd'
         git branch: 'master', credentialsId: 'github_jenkins_access', url: 'https://github.com/Ohernandezm/Obrador-copy.git'  
       }
     }
     stage('Clone repository 2') {
       steps { 
+        sh 'pwd'
         sh 'mkdir -p Devops-docker'
+        sh 'pwd'
         sh 'cd Devops-docker'
+        sh 'pwd'
         git branch: 'master', credentialsId: 'github_jenkins_access', url: 'https://github.com/Ohernandezm/Devops-docker.git'   
       }
     }
