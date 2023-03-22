@@ -1,14 +1,10 @@
 pipeline {
   agent any
+
   stages {
     stage('Checkout') {
       steps {
         checkout scm
-      }
-    }
-    stage('Crea Directorio') {
-      steps {
-        sh 'mkdir repos'
       }
     }
 /*
@@ -22,12 +18,16 @@ pipeline {
     */
     stage('Clone repository 1') {
       steps {
-                dir('/repos/') {
         git branch: 'master', credentialsId: 'github_jenkins_access', url: 'https://github.com/Ohernandezm/Obrador-copy.git'
-        git branch: 'master', credentialsId: 'github_jenkins_access', url: 'https://github.com/Ohernandezm/Devops-docker.git'
-                }
+        skipClean: true
       }
-    } 
+    }
+    stage('Clone repository 2') {
+      steps {
+        git branch: 'master', credentialsId: 'github_jenkins_access', url: 'https://github.com/Ohernandezm/Devops-docker.git'
+        skipClean: true
+      }
+    }
 
    /* stage('Build Docker') {
       steps {
@@ -42,5 +42,5 @@ pipeline {
         sh 'newman run  ./obrador/Monitor_Obrador.postman_collection.json -e  ./obrador/Obrador_Localhost.postman_environment.json'
       }
     }*/
-}
+  }
 }
