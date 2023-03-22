@@ -17,20 +17,13 @@ pipeline {
     }
     */
 
-    stage('Clone repository') {
+    
+    stage('Clone repository 1') {
       steps {
-        checkout([
-                    $class: 'GitSCM',
-                    branches: [[name: 'master']],
-                    doGenerateSubmoduleConfigurations: false,
-                    extensions: [[$class: 'CloneOption', noTags: true, reference: '', shallow: false]],
-                    submoduleCfg: [],
-                    userRemoteConfigs: [[
-                       credentialsId: 'github_jenkins_access', url: 'https://github.com/Ohernandezm/Obrador-copy.git'
-                    ]]
-                ])
+        git branch: 'master', credentialsId: 'github_jenkins_access', url: 'https://github.com/Ohernandezm/Obrador-copy.git'
+        sh 'cp /home/Devops-docker ./'
       }
-    }
+    } 
 
    /* stage('Build Docker') {
       steps {
