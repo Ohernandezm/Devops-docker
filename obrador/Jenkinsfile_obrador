@@ -16,7 +16,17 @@ pipeline {
       }
     }
     */
-
+   stage('Clone repository') {
+      steps {
+        sh 'ls' 
+        sh 'pwd'
+        git branch: 'master',
+        credentialsId: 'github_jenkins_access',
+        url: 'https://github.com/Ohernandezm/Devops-docker.git'
+        sh 'ls' 
+        sh 'pwd'
+      }
+    }
     stage('Clone repository') {
       steps {
         sh 'ls' 
