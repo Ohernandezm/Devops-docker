@@ -27,7 +27,7 @@ pipeline {
         git branch: 'master',
         credentialsId: 'github_jenkins_access',
         url: 'https://github.com/Ohernandezm/Obrador-copy.git'
-      }
+      },
       steps {
         sh 'ls'
       }
