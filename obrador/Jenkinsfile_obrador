@@ -18,13 +18,9 @@ pipeline {
     stage('Clone repository 1') {
       steps { 
         git branch: 'master', credentialsId: 'github_jenkins_access', url: 'https://github.com/Ohernandezm/Obrador-copy.git'
-      }
-    }
-    stage('Clone repository 2') {
-      steps { 
         git branch: 'master', credentialsId: 'github_jenkins_access', url: 'https://github.com/Ohernandezm/Devops-docker.git'
       }
-    }
+    } 
 
    /* stage('Build Docker') {
       steps {
