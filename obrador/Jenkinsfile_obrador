@@ -16,7 +16,7 @@ pipeline {
       }
     }
     */
-   stage('Clone repository') {
+   stage('Clone repository Devops') {
       steps {
         sh 'ls' 
         sh 'pwd'
