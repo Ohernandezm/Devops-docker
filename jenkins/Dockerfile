@@ -1,4 +1,4 @@
-FROM jenkins:2.387.1
+FROM jenkins/jnlp-slave:latest
 
 COPY plugins.txt /usr/share/jenkins/plugins.txt
 RUN /usr/local/bin/plugins.sh /usr/share/jenkins/plugins.txt
@@ -14,3 +14,7 @@ COPY config/*.groovy /usr/share/jenkins/ref/init.groovy.d/
 
 # lets configure Jenkins with some defaults
 COPY config/*.xml /usr/share/jenkins/ref/
+USER root
+
+RUN apt-get update && apt-get install -y nodejs npm
+ 
