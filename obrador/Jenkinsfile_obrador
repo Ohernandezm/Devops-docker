@@ -30,5 +30,12 @@ pipeline {
         sh 'ls'
       }
     }
+
+    stage('Build Docker') {
+      steps {
+        sh 'docker compose up -d'
+        sh 'docker ps'
+      }
+    }
   }
 }
