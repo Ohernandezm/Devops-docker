@@ -1,8 +1,7 @@
 pipeline {
   agent any
 
-  stages { 
-/*
+  stages {
     stage('Install Dependencies') {
       steps {
         sh 'npm install -g newman'
@@ -10,31 +9,27 @@ pipeline {
         sh 'npm install'
       }
     }
-    */
-
-    
-    stage('Clone repository 1') {
+    stage('Clone Repository Obrador') {
       steps {
-        sh 'pwd'
-        sh 'mkdir -d repos'
         git branch: 'master', credentialsId: 'github_jenkins_access', url: 'https://github.com/Ohernandezm/Obrador-copy.git'
-        sh 'pwd' 
-        sh 'ls'
       }
-    } 
-
-   /* stage('Build Docker') {
+    }
+    stage('Build Obrador') {
       steps {
         sh 'docker compose up -d'
         sh 'npm run typeorm migration:run'
         sh 'docker ps'
       }
-   }
-
+    }
+    stage('Clone Repository Devops') {
+      steps {
+        git branch: 'master', credentialsId: 'github_jenkins_access', url: 'https://github.com/Ohernandezm/Devops-docker.git'
+      }
+    }
     stage('Test Postman') {
       steps {
         sh 'newman run  ./obrador/Monitor_Obrador.postman_collection.json -e  ./obrador/Obrador_Localhost.postman_environment.json'
       }
-    }*/
+    }
   }
 }
