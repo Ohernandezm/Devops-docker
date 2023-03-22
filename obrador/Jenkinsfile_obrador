@@ -15,37 +15,12 @@ pipeline {
         sh 'npm install'
       }
     }
-    stage('Create HTML directory') {
-      steps {
-        sh 'mkdir -p newman'
-      }
-    }
+   
     stage('Test Postman') {
       steps {
-        sh 'newman run  ./obrador/Monitor_Obrador.postman_collection.json -e  ./obrador/Obrador_Prod.postman_environment.json -r html'
+        sh 'newman run  ./obrador/Monitor_Obrador.postman_collection.json -e  ./obrador/Obrador_Prod.postman_environment.json'
       }
     }
-    stage('Publish Newman Report') {
-      steps {
-        publishHTML(target: [
-                    allowMissing: false,
-                    alwaysLinkToLastBuild: false,
-                    keepAll: true,
-                    reportDir: 'newman',
-                    reportFiles: 'newman-report-*.html',
-                    reportName: 'Newman Report'
-                ])
-      }
-    }
-    stage('Send Email') {
-      steps {
-        emailext(
-      subject: 'Newman Test Results',
-      body: 'Attached please find the Newman test results',
-      attachmentsPattern: 'newman-report.html',
-      to: 'ohernandez@juango.com.uy'
-    )
-      }
-    }
+   
   }
 }
