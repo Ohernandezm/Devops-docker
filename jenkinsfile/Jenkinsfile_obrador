@@ -1,22 +1,22 @@
 pipeline {
   agent any
   
-  stages {
-    stage('Checkout') {
-      steps {
-        checkout scm
-      }
-    }
+            stages {
+              stage('Checkout') {
+                steps {
+                  checkout scm
+                }
+              }
     
-    stage('Install Dependencies') {
-      steps {
-        sh 'npm install -g newman'
-        sh 'npm install'
-      }
-    }
+            stage('Install Dependencies') {
+              steps {
+                sh 'npm install -g newman'
+                sh 'npm install'
+              }
+            }
             stage('Test Postman') {
                 steps { 
-                    sh 'cd postman'
+                    sh 'cd ../postman'
                     sh 'newman run  Monitor_Obrador.postman_collection.json -e  Obrador_Prod.postman_environment.json' 
                 }
             }
