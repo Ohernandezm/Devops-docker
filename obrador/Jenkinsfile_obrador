@@ -16,8 +16,17 @@ pipeline {
             }
             stage('Test Postman') {
                 steps {   
-                    sh 'newman run  ./obrador/Monitor_Obrador.postman_collection.json -e  ./obrador/Obrador_Prod.postman_environment.json' 
-                }
-            }
+                    sh 'newman run  ./obrador/Monitor_Obrador.postman_collection.json -e  ./obrador/Obrador_Prod.postman_environment.json --reporters cli,junit,htmlextra --reporter-junit-export "newman_result.xml" --reporter-htmlextra-export "newman_result.html"'
+                      junit "*.xml"
+    
+    publishHTML target: [
+            allowMissing: false,
+            alwaysLinkToLastBuild: false,
+            keepAll: true,
+            reportDir: '.',
+            reportFiles: 'newman_result.html',
+            reportName: 'Newman HTML Reporter'
+    ]
+        }
         }
 }
