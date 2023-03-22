@@ -1,16 +1,5 @@
 pipeline {
-  agent any
-  agent {
-    sshagent(credentials: ['github_jenkins_access']) {
-    // Agregar aquí los pasos de la etapa
-    }
-  }
-  stages {
-    stage('Checkout') {
-      steps {
-        checkout scm
-      }
-    }
+  agent any 
 /*
     stage('Install Dependencies') {
       steps {
