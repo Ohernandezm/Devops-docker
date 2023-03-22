@@ -11,27 +11,11 @@ pipeline {
         checkout scm
       }
     }
-  /*  stage('Install Dependencies') {
+    stage('Install Dependencies') {
       steps {
-        sh 'npm install -g newman'
-        sh 'npm install -g newman-reporter-html'
+        sh 'ls'
+        sh 'npm install -g newman' 
         sh 'npm install'
-      }
-    }*/
-    stage('Clone Repository Obrador') {
-      steps {
-        sh 'ls'
-        git branch: 'master', credentialsId: 'github_jenkins_access', url: 'https://github.com/Ohernandezm/Devops-docker.git'
-        sh 'cd obrador'
-
-        git branch: 'master', credentialsId: 'github_jenkins_access', url: 'https://github.com/Ohernandezm/Obrador-copy.git'
-        sh 'ls'
-        sh 'cd devops'
-        sh 'ls'
-        sh 'cd ..'
-        sh 'ls'
-        sh 'cd ..'
-        sh 'ls'
       }
     }
     /*
