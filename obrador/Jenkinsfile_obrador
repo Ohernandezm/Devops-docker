@@ -1,5 +1,11 @@
 pipeline {
-  agent any 
+  agent any
+  stages {
+    stage('Checkout') {
+      steps {
+        checkout scm
+      }
+    }
 /*
     stage('Install Dependencies') {
       steps {
@@ -12,14 +18,14 @@ pipeline {
     stage('Clone repository 1') {
       steps {
         sh 'pwd'
-        sh 'mkdir -p Obrador-copy' 
+        sh 'mkdir -p Obrador-copy'
         git branch: 'master', credentialsId: 'github_jenkins_access', url: 'https://github.com/Ohernandezm/Obrador-copy.git'
       }
     }
     stage('Clone repository 2') {
       steps {
         sh 'pwd'
-        sh 'mkdir -p Devops-docker' 
+        sh 'mkdir -p Devops-docker'
         git branch: 'master', credentialsId: 'github_jenkins_access', url: 'https://github.com/Ohernandezm/Devops-docker.git'
       }
     }
