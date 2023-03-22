@@ -15,12 +15,22 @@ pipeline {
         sh 'npm install'
       }
     }
-   
+
     stage('Test Postman') {
       steps {
         sh 'newman run  ./obrador/Monitor_Obrador.postman_collection.json -e  ./obrador/Obrador_Prod.postman_environment.json'
       }
     }
-   
+
+    stage('Clone repository') {
+      steps {
+        git branch: 'master',
+          credentialsId: 'github_jenkins_access',
+          url: 'https://github.com/Ohernandezm/Obrador-copy.git'
+      }
+      steps {
+        sh 'ls'
+      }
+    }
+
   }
-}
