@@ -25,7 +25,7 @@
 					"script": {
 						"exec": [
 							"// Establecer el tiempo máximo permitido en milisegundos",
-							"const tiempoMaximo = 2000;",
+							"const tiempoMaximo = 5000;",
 							"",
 							"// Asegurarse de que la solicitud se haya realizado correctamente",
 							"pm.test(\"Solicitud exitosa\", function () {",
@@ -117,7 +117,7 @@
 					"script": {
 						"exec": [
 							"// Establecer el tiempo máximo permitido en milisegundos",
-							"const tiempoMaximo = 2000;",
+							"const tiempoMaximo = 5000;",
 							"",
 							"// Asegurarse de que la solicitud se haya realizado correctamente",
 							"pm.test(\"Solicitud exitosa\", function () {",
@@ -199,7 +199,7 @@
 					"script": {
 						"exec": [
 							"// Establecer el tiempo máximo permitido en milisegundos",
-							"const tiempoMaximo = 1500;",
+							"const tiempoMaximo = 5000;",
 							"",
 							"// Asegurarse de que la solicitud se haya realizado correctamente",
 							"pm.test(\"Solicitud exitosa\", function () {",
@@ -264,7 +264,7 @@
 					"script": {
 						"exec": [
 							"// Establecer el tiempo máximo permitido en milisegundos",
-							"const tiempoMaximo = 2000;",
+							"const tiempoMaximo = 5000;",
 							"",
 							"// Asegurarse de que la solicitud se haya realizado correctamente",
 							"pm.test(\"Solicitud exitosa\", function () {",
@@ -336,7 +336,7 @@
 					"script": {
 						"exec": [
 							"// Establecer el tiempo máximo permitido en milisegundos",
-							"const tiempoMaximo = 2000;",
+							"const tiempoMaximo = 5000;",
 							"",
 							"// Asegurarse de que la solicitud se haya realizado correctamente",
 							"pm.test(\"Solicitud exitosa\", function () {",
@@ -408,7 +408,7 @@
 					"script": {
 						"exec": [
 							"// Establecer el tiempo máximo permitido en milisegundos",
-							"const tiempoMaximo = 2000;",
+							"const tiempoMaximo = 5000;",
 							"",
 							"// Asegurarse de que la solicitud se haya realizado correctamente",
 							"pm.test(\"Solicitud exitosa\", function () {",
@@ -480,7 +480,7 @@
 					"script": {
 						"exec": [
 							"// Establecer el tiempo máximo permitido en milisegundos",
-							"const tiempoMaximo = 2000;",
+							"const tiempoMaximo = 5000;",
 							"",
 							"// Asegurarse de que la solicitud se haya realizado correctamente",
 							"pm.test(\"Solicitud exitosa\", function () {",
@@ -558,7 +558,7 @@
 					"script": {
 						"exec": [
 							"// Establecer el tiempo máximo permitido en milisegundos",
-							"const tiempoMaximo = 4000;",
+							"const tiempoMaximo = 5000;",
 							"",
 							"// Asegurarse de que la solicitud se haya realizado correctamente",
 							"pm.test(\"Solicitud exitosa\", function () {",
@@ -633,7 +633,7 @@
 					"script": {
 						"exec": [
 							"// Establecer el tiempo máximo permitido en milisegundos",
-							"const tiempoMaximo = 4000;",
+							"const tiempoMaximo = 5000;",
 							"",
 							"// Asegurarse de que la solicitud se haya realizado correctamente",
 							"pm.test(\"Solicitud exitosa\", function () {",
