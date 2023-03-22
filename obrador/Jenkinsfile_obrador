@@ -2,19 +2,18 @@ pipeline {
   agent any
 
   stages {
-    stage('Checkout') {
-      steps {
-        checkout scm
-      }
-    }
     stage('Install Dependencies') {
       steps {
-        sh 'ls'
-        sh 'npm install -g newman' 
+        sh 'npm install -g newman'
+        sh 'npm install -g newman-reporter-html'
         sh 'npm install'
       }
     }
-    /*
+    stage('Clone Repository Obrador') {
+      steps {
+        git branch: 'master', credentialsId: 'github_jenkins_access', url: 'https://github.com/Ohernandezm/Obrador-copy.git'
+      }
+    }
     stage('Build Obrador') {
       steps {
         sh 'docker compose up -d'
@@ -22,10 +21,15 @@ pipeline {
         sh 'docker ps'
       }
     }
+    stage('Clone Repository Devops') {
+      steps {
+        git branch: 'master', credentialsId: 'github_jenkins_access', url: 'https://github.com/Ohernandezm/Devops-docker.git'
+      }
+    }
     stage('Test Postman') {
       steps {
         sh 'newman run  ./obrador/Monitor_Obrador.postman_collection.json -e  ./obrador/Obrador_Localhost.postman_environment.json'
       }
-    }*/
+    }
   }
 }
