@@ -24,7 +24,7 @@ pipeline {
         sh 'cp -r Obrador-copy/* $WORKSPACE/'
       }
     }
-    stage('Clone repository 1') {
+    stage('Clone repository 2') {
       steps { 
         git branch: 'master',
         credentialsId: 'github_jenkins_access',
