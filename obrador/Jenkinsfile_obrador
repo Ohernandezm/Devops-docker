@@ -14,6 +14,11 @@ pipeline {
         sh 'npm install'
       }
     }
+    stage('Create HTML directory') {
+      steps {
+        sh 'mkdir -p newman'
+      }
+    }
     stage('Test Postman') {
       steps {
         sh 'newman run  ./obrador/Monitor_Obrador.postman_collection.json -e  ./obrador/Obrador_Prod.postman_environment.json -r html'
