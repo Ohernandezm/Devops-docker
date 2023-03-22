@@ -16,12 +16,6 @@ pipeline {
       }
     }
 
-    stage('Test Postman') {
-      steps {
-        sh 'newman run  ./obrador/Monitor_Obrador.postman_collection.json -e  ./obrador/Obrador_Prod.postman_environment.json'
-      }
-    }
-
     stage('Clone repository') {
       steps {
         git branch: 'master',
@@ -35,6 +29,12 @@ pipeline {
       steps {
         sh 'docker compose up -d'
         sh 'docker ps'
+      }
+    }
+
+    stage('Test Postman') {
+      steps {
+        sh 'newman run  ./obrador/Monitor_Obrador.postman_collection.json -e  ./obrador/Obrador_Localhost.postman_environment.json'
       }
     }
   }
